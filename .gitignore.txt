@@ -16,3 +16,5 @@ __pycache__/logger.cpython-39.pyc
 __pycache__/function.cpython-39.pyc
 __pycache__/lower_logic.cpython-39.pyc
 __pycache__/upper_logic.cpython-39.pyc
+.idea/vcs.xml
+__pycache__/upper_logic.cpython-39.pyc

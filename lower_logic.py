@@ -83,6 +83,30 @@ def user_del():
 
 
 '''
+Функция  выбора пользователя
+'''
+
+def user_choose():
+    user_name = os.environ.get("USERNAME")
+    path = 'C:\\Users\\' + user_name + '\\Documents\\aNotes'
+    user_list = os.listdir(path)
+    if len(user_list) == 0:
+        print('В приложении никто не зарегистрирован\n'
+              'Выбор невозможен\n')
+        help_info()
+    else:
+        user_for_choose = input('Введите имя пользователя >> \n')
+        help_info()
+        if not os.path.isdir('C:\\Users\\' + user_name + '\\Documents\\aNotes\\' + user_for_choose):
+            print('Данного пользователя не существует. Введите другое имя.\n')
+            user_choose()
+        else:
+            new_path = 'C:\\Users\\' + user_name + '\\Documents\\aNotes' + user_for_choose
+    return new_path
+
+
+
+'''
 Функция вывода информация для последующего выбора команды пользователем
 '''
 
@@ -127,6 +151,9 @@ def input_user_select(var):
 
     elif var == 'del':
         user_del()
+
+    elif var == 'choose':
+        user_choose()
 
     else:
         print('Введена некорректная команда\n')

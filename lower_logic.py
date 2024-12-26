@@ -128,6 +128,9 @@ def input_user_select(var):
     elif var == 'del':
         user_del()
 
+    else:
+        print('Введена некорректная команда\n')
+        help_info()
 
 
 '''

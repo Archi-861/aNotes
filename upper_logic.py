@@ -5,7 +5,7 @@ from lower_logic import bold_text, create_directory, create_new_user, user_selec
 def enter_point():
     user_name = os.environ.get("USERNAME")
     print('Привет,' + bold_text(user_name) + '! \n'
-          'Добро пожаловать в приложение aNotes!\n')
+          'Добро пожаловать в приложение aNotes!')
 
 
 

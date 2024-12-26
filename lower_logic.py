@@ -83,6 +83,36 @@ def user_del():
 
 
 '''
+Функция редактирования пользователя
+'''
+
+def user_edit():
+    user_name = os.environ.get("USERNAME")
+    path = 'C:\\Users\\' + user_name + '\\Documents\\aNotes'
+    user_list = os.listdir(path)
+    if len(user_list) == 0:
+        print('В приложении никто не зарегистрирован\n'
+              'Редактирование невозможно')
+    else:
+        user_for_edit = input('Введите имя пользователя для редактирования >> ')
+        if not os.path.isdir('C:\\Users\\' + user_name + '\\Documents\\aNotes\\' + user_for_edit):
+            print('Данного пользователя не существует. Введите другое имя.')
+            user_edit()
+            help_info()
+        else:
+            new_user = input('Введите имя пользователя, непревышающее 12 символов >> ')
+            if len(new_user) <= 12:
+                old_folder = 'C:\\Users\\' + user_name + '\\Documents\\aNotes\\' + user_for_edit
+                new_folder = 'C:\\Users\\' + user_name + '\\Documents\\aNotes\\' + new_user
+                os.rename(old_folder, new_folder)
+                print('Редактирование завершено успешно\n')
+            else:
+                print('Введено неверное количество символов')
+                user_edit()
+                help_info()
+
+
+'''
 Функция вывода информация для последующего выбора команды пользователем
 '''
 
@@ -129,7 +159,9 @@ def input_user_select(var):
     elif var == 'del':
         user_del()
 
-
+    elif var == 'edit':
+        user_edit()
+    
 
 '''
 Функция вызова информации для помощи пользователю

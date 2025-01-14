@@ -1,54 +1,42 @@
-from datetime import datetime
+#Информативные функции для общения с пользователем
 
 
-'''
-Функция по выделению жирным шрифтом
-'''
-
-def bold_text(text):
-    bold_start = '\033[1m'
-    bold_end = '\033[0m'
-    return bold_start + text + bold_end
-
-
-'''
-Функция по обозначению даты заметки
-'''
-
-def note_date():
-    time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-    return time
-
-
-'''
-Вывод текста для функции по созданию нового пользователя
-'''
-
-def add_new_user_text_1():
+def user_add_text_1():
     print('\nИмя пользователя не введено!\n'
           'Повторите ввод\n')
 
 
-def add_new_user_text_2():
+
+def user_add_text_2():
     print('\nДанный пользователь уже существует. Введите другое имя.\n')
 
 
-def add_new_user_text_3():
+
+def user_add_text_3():
     print('\nПользователь успешно создан!')
 
 
-def add_new_user_text_4():
-    print('\nИмя пользователя не может содержать специальные символы ~$^№@[]{}<>=.,:;!_*-+()/#%&')
+
+def user_add_text_5():
+    print('\nПароль успешно создан')
+
+
+
+def user_add_text_6():
+    print('\nПароль не введен\n'
+          'Повторите ввод\n')
+
 
 
 def user_select_info_text():
     print('Выберите команду:\n'
           'list   - Вывести список пользователей\n'
-          'login - Выбрать пользователя\n'
+          'login  - Выбрать пользователя\n'
           'add    - Добавить пользователя\n'
           'edit   - Редактировать пользователя\n'
           'del    - Удалить пользователя\n'
           'exit   - Завершить работу\n')
+
 
 
 def user_list_text():
@@ -56,13 +44,16 @@ def user_list_text():
             'Присоединяйтесь!\n')
 
 
+
 def user_edit_text_1():
       print('\nВ приложении никто не зарегистрирован\n'
               'Редактирование невозможно\n')
 
 
+
 def user_edit_text_2():
       print('Данного пользователя не существует. Введите другое имя.')
+
 
 
 def user_edit_text_3():
@@ -70,21 +61,21 @@ def user_edit_text_3():
           'Повторите ввод\n')
 
 
+
 def user_edit_text_4():
     print('\nДанный пользователь уже существует!\n')
 
 
-'''
-Вывод текста для функции по удалению пользователя
-'''
 
 def user_del_text_1():
       print('В приложении никто не зарегистрирован\n'
             'Удаление невозможно')
 
 
+
 def user_del_text_2():
       print('\nДанного пользователя не существует!\n')
+
 
 
 def user_del_text_3():
@@ -92,9 +83,11 @@ def user_del_text_3():
             'Для отмены действия введите - no\n')
 
 
+
 def user_del_text_4():
     print('\nИмя пользователя не введено!\n'
           'Повторите ввод\n')
+
 
 
 def input_user_select_text():
@@ -102,13 +95,16 @@ def input_user_select_text():
             'Присоединяйтесь!')
 
 
+
 def user_login_text_1():
       print('В приложении никто не зарегистрирован\n'
             'Выбор невозможен\n')
 
 
+
 def user_login_text_2():
       print('Данного пользователя не существует. Введите другое имя.\n')
+
 
 
 def user_login_text_3():
@@ -116,19 +112,23 @@ def user_login_text_3():
           'Повторите ввод\n')
 
 
+
 def help_info_text():
       print('\nВведите help для вывода списка команд\n')
+
 
 
 def error_input_1():
       print('Введена некорректная команда\n')
 
 
+
 def error_input_2():
       print('Введено неверное количество символов\n')
 
 
-def add_note_menu():
+
+def note_menu():
     print('Список команд по заметкам:\n'
           'create   - Создать новую заметку\n'
           'find     - Поиск заметки\n'
@@ -138,13 +138,16 @@ def add_note_menu():
           'exit     - Завершить работу\n')
 
 
+
 def note_list_text():
     print('\nЗаметок еще нет!\n'
           'Давай создадим\n')
 
 
-def help_info_note():
+
+def note_help_info():
     print('\nВведите help для вывода списка команд по заметкам\n')
+
 
 
 def del_note_text_1():
@@ -152,21 +155,27 @@ def del_note_text_1():
           'Удаление невозможно\n')
 
 
+
 def del_note_text_2():
     print('\nНомер заметки не введен\n'
           'Повторите ввод')
+
+
 
 def del_note_text_3():
     print('Для подтверждения удаления введите - yes\n'
           'Для отмены действия введите - no\n')
 
 
+
 def del_note_text_4():
     print('\nЗаметка успешно удалена\n')
 
 
+
 def del_note_text_5():
     print('\nТакой заметки у вас нет\n')
+
 
 
 def find_note_text_1():
@@ -174,13 +183,16 @@ def find_note_text_1():
           'Поиск невозможно\n')
 
 
+
 def find_note_text_2():
     print('\nНомер заметки не введен\n'
           'Повторите ввод')
 
 
+
 def find_note_text_3():
     print('\nТакой заметки у вас нет\n')
+
 
 
 def edit_note_text_1():
@@ -188,14 +200,27 @@ def edit_note_text_1():
           'Редактирование невозможно\n')
 
 
+
 def edit_note_text_2():
     print('\nНомер заметки не введен\n'
           'Повторите ввод')
+
 
 
 def edit_note_text_3():
     print('\nТакой заметки у вас нет\n')
 
 
+
 def edit_note_text_4():
     print('\nЗаметка успешно отредактирована\n')
+
+
+
+def check_password_text_1():
+    print('\nВведен неверный пароль\n')
+
+
+
+def check_password_text_2():
+    print('\nВы успешно авторизованы\n')

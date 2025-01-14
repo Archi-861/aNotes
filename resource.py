@@ -1,27 +1,35 @@
 import  os
-
 from support import *
 import shutil
+from datetime import datetime
 
 
-user_name = os.environ.get("USERNAME")
-path = 'C:\\Users\\' + user_name + '\\Documents\\aNotes'
-path_user = 'C:\\Users\\' + user_name + '\\Documents\\aNotes\\Users'
+user_name = os.environ.get("USERNAME")   #Информация для приветственного сообщения пользователю с обращением к имени пользователя операционной системы
+path = 'C:\\Users\\' + user_name + '\\Documents\\aNotes'   #путь для создания директории приложения
+path_user = 'C:\\Users\\' + user_name + '\\Documents\\aNotes\\Users'   #путь для создания директории пользователей приложения
 
-spec_symbol = '~$^№@[]{}<>=.,:;!_*-+()/#%&'
-
-
-def note_date():
-    time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-    return time
 
 
 def enter_point():
+    """
+    Функция для приветствия пользователя. Берет данные пользователя с системных настроек.
+    :return: None
+    """
     print('Привет, ' + user_name + '! \n'
           'Добро пожаловать в приложение aNotes!\n')
 
 
+
 def user_select():
+    """
+    Функция по созданию директории приложения в пути path, текстового файла users.txt для хранения данных пользователей и вывод команд по пользователям.
+    Функция получает переменную var с выбранной пользователем командой и передает в функцию input_user_select.
+    Выполняются следующие проверки:
+    1) Наличие уже созданной директории;
+    2) Наличие уже созданного текстового файла;
+    3) Проверка на ввод exit.
+    :return: None
+    """
     if not os.path.isdir(path):
         os.mkdir(path)
 
@@ -38,33 +46,48 @@ def user_select():
         var = input('Введите команду >> ')
         user_var = input_user_select(var)
 
-        if user_var == 'exit':
+        if user_var == 'exit':   #удаление буферного файла по проверке пароля пользователя
+            os.remove(path + '\\$$users.txt')
             return False
 
 
-'''
-Функция обработки команд пользователя
-'''
 
 def input_user_select(var):
+    """
+    Функция обработки варианта команды пользователя.
+    Команда list выводит список пользователей приложения. В случае отсутствия пользователей запускает функцию по созданию пользователя add_new_user.
+    Команда exit закрывает приложение.
+    Команда add запускает функцию по созданию пользователя user_add.
+    Команда help выводит информативную функцию по списку команд user_select_info.
+    Команда del запускает функцию по удалению пользователя user_del.
+    Команда edit запускает функцию по редактированию пользователя user_edit.
+    Команда login запускает функцию по выбору (авторизации) пользователя приложения user_login.
+    Выполняются следующие проверки:
+    1) Проверка на ввод exit;
+    2) Проверка на ввод несоответствующий командам выше.
+    :param var:str
+    :return: None
+    """
     user_list = os.listdir(path_user)
 
     if var == 'exit':
         return var
 
     elif var == 'list':
+
         if len(user_list) == 0:
             user_list_text()
-            add_new_user()
+            user_add()
             help_info()
 
         elif len(user_list) > 0:
+
             for user in user_list:
                 print(user)
             help_info()
 
     elif var == 'add':
-        add_new_user()
+        user_add()
         help_info()
 
     elif var == 'help':
@@ -82,48 +105,90 @@ def input_user_select(var):
     else:
         error_input_1()
         help_info()
-'''
-Функция создания нового пользователя
-'''
 
-def add_new_user():
+
+
+def user_add():
+    """
+    Функция по созданию нового пользователя в приложении. Создается запись в текстовый файл users.txt и создается директория с именем пользователя.
+    Имя пользователя не должно превышать 12 символов. Дополнительно запрашивается необходимость установки пароля на учетную запись пользователя. Пароль ограничен 10 символами.
+    Выполняются следующие проверки:
+    1) Проверка на количество символов на вводе имени пользователя
+    2) Наличие на уже созданного пользователя с таким же именем;
+    3) Проверка на пустой ввод, ввод break и DELETED;
+    4) Проверка на количество символов на вводе пароля пользователя.
+    :return: None
+    """
     while True:
-        user = input('Введите имя пользователя, непревышающее 12 символов\n'
+        user = input('Введите имя пользователя, не превышающее 12 символов\n'
                      'Или введите break для выхода в предыдущее меню >> ')
 
         if user == '':
-            add_new_user_text_1()
+            user_add_text_1()
             continue
 
         if os.path.isdir(path_user + '\\' + user):
-            add_new_user_text_2()
+            user_add_text_2()
             continue
 
         if user == 'break':
             break
 
         if user == 'DELETED':
-            add_new_user_text_1()
+            user_add_text_1()
             continue
 
         if len(user) <= 12:
             os.mkdir(path_user + '\\' + user)
             new_path = path_user + '\\' + user
-            with open(path + '\\users.txt', 'a', encoding='utf-8') as file:
-                file.write('user_name:' + user + '間')
-                file.write('user_path:' + new_path + '間\n')
-                add_new_user_text_3()
-                break
+            user_add_text_3()
+
+            while True:
+                user_password = input('Добавьте пароль к учетной записи\n'
+                                      'Или введите no - для отказа\n'
+                                      'Пароль не должен превышать 10 знаков! >> ')
+
+                if user_password == '':
+                    user_add_text_6()
+                    continue
+
+                elif user_password == 'break':
+                    break
+
+                elif user_password == 'no':   #создание пользователя без пароля
+                    with open(path + '\\users.txt', 'a', encoding='utf-8') as file:
+                        file.write('user_name:' + user + '間')
+                        file.write('user_password:NONE間')
+                        file.write('user_path:' + new_path + '間\n')
+                        return False
+
+                elif len(user_password) <= 10:   #создание пользователя с паролем
+                    with open(path + '\\users.txt', 'a', encoding='utf-8') as file:
+                        file.write('user_name:' + user + '間')
+                        file.write('user_password:' + user_password + '間')
+                        file.write('user_path:' + new_path + '間\n')
+                        user_add_text_5()
+                        return False
+
+                else:
+                    error_input_2()
+                    continue
 
         else:
             error_input_2()
 
 
-'''
-Функция удаления пользователя
-'''
 
 def user_del():
+    """
+    Функция для удаления пользователя из приложения, а именно замена имени пользователя в текстовом файле users.txt на имя DELETED
+    и удаление директории пользователя с заметками.
+    Выполняются следующие проверки:
+    1) Наличие данного пользователя в приложении;
+    2) Наличие пароля пользователя;
+    3) Проверка на пустой ввод, на ввод break и DELETED.
+    :return: None
+    """
     user_list = os.listdir(path_user)
 
     while True:
@@ -153,31 +218,75 @@ def user_del():
             continue
 
         else:
-            user_del_text_3()
-
             while True:
-                confirmation = input('Ваша команда (введите no для выхода в предыдущее меню) >> ')
+                user_authorization = user_for_del
+                user_password = check_password(user_authorization)   #проверка пароля пользователя для удаления данных
 
-                if confirmation =='yes':
-                    shutil.rmtree(path_user + '\\' + user_for_del)
-                    with open(path + '\\users.txt', 'r', encoding='utf-8') as file:
-                        users = file.read()
-                        new_status = users.replace(user_for_del, 'DELETED')
-                    with open(path + '\\users.txt', 'w', encoding='utf-8') as file:
-                        file.write(new_status)
-                    print('\nПользователь удален\n')
-                    help_info()
-                    break
-                if confirmation == 'no':
-                    help_info()
-                    break
+                if user_password == 'NONE':
+                    check_password_text_2()
+                    user_del_text_3()
+                    while True:
+                        confirmation = input('Ваша команда (введите no для выхода в предыдущее меню) >> ')
+
+                        if confirmation == 'yes':
+                            shutil.rmtree(path_user + '\\' + user_for_del)
+                            with open(path + '\\users.txt', 'r', encoding='utf-8') as file:
+                                users = file.read()
+                                new_status = users.replace(user_for_del, 'DELETED')
+                            with open(path + '\\users.txt', 'w', encoding='utf-8') as file:
+                                file.write(new_status)
+                            print('\nПользователь удален\n')
+                            help_info()
+                            return False
+                        if confirmation == 'no':
+                            help_info()
+                            return False
+
+                else:
+                    input_password = input('\nВведите пароль для продолжения\n'
+                                           'Или введите break для выхода в предыдущее меню >> ')
+
+                    if input_password == 'break' or input_password == 'Break':
+                        help_info()
+                        return False
+
+                    if input_password == user_password:
+                        check_password_text_2()
+                        user_del_text_3()
+                        while True:
+                            confirmation = input('Ваша команда (введите no для выхода в предыдущее меню) >> ')
+
+                            if confirmation =='yes':
+                                shutil.rmtree(path_user + '\\' + user_for_del)
+                                with open(path + '\\users.txt', 'r', encoding='utf-8') as file:
+                                    users = file.read()
+                                    new_status = users.replace(user_for_del, 'DELETED')
+                                with open(path + '\\users.txt', 'w', encoding='utf-8') as file:
+                                    file.write(new_status)
+                                print('\nПользователь удален\n')
+                                help_info()
+                                return False
+                            if confirmation == 'no':
+                                help_info()
+                                return False
+
+                    if input_password != user_password:
+                        check_password_text_1()
+                        help_info()
+                        return False
 
 
-'''
-Функция  выбора пользователя
-'''
 
 def user_login():
+    """
+    Функция по выбору (авторизации) пользователя для последующей работы с интерфейсом заметок.
+    Запускает функцию note_main.
+    Выполняются следующие проверки:
+    1) Наличие введенного пользователя в приложении;
+    2) Проверка на пустой ввод, ввод break, DELETED;
+    3) Проверка на соответствие пароля пользователя.
+    :return: None
+    """
     user_list = os.listdir(path_user)
 
     while True:
@@ -207,25 +316,56 @@ def user_login():
             continue
 
         else:
-            add_note_menu()
+            while True:
+                user_authorization = user_for_login
+                user_password = check_password(user_authorization)
 
-            while  True:
-                user = user_for_login
-                action = input('Введите команду для заметок>> ')
-                main_note(action, user)
-                help_info_note()
+                if user_password == 'NONE':
+                    check_password_text_2()
+                    while True:
+                        user = user_for_login
+                        action = input('Введите команду для заметок>> ')
+                        note_main(action, user)
+                        note_help_info()
+                        if action == 'exit' or action == 'Exit':
+                            return False
 
-                if action == 'exit':
-                    return False
+                else:
+                    input_password = input('\nВведите пароль для продолжения\n'
+                                           'Или введите break для выхода в предыдущее меню >> ')
+
+                    if input_password == 'break' or input_password == 'Break':
+                        help_info()
+                        return False
+
+                    if input_password == user_password:
+                        check_password_text_2()
+                        note_menu()
+
+                        while True:
+                            user = user_for_login
+                            action = input('Введите команду для заметок>> ')
+                            note_main(action, user)
+                            note_help_info()
+                            if action == 'exit' or  action == 'Exit':
+                                return False
+
+                    if input_password != user_password:
+                        check_password_text_1()
+                        help_info()
+                        return False
 
 
-
-
-'''
-Функция редактирования пользователя
-'''
 
 def user_edit():
+    """
+    Функция по редактированию имени пользователя приложения путем перезаписи файла users.txt и изменение директории пользователя.
+    Выполняются следующие проверки:
+    1) Наличие введенного пользователя в приложении;
+    2) Проверка на пустой ввод, ввод break, DELETED;
+    3) Проверка на соответствие пароля пользователя.
+    :return: None
+    """
     user_list = os.listdir(path_user)
 
     while True:
@@ -256,90 +396,140 @@ def user_edit():
 
         else:
             while True:
-                new_user = input('Введите новое имя пользователя\n'
-                                 'Или break для выхода в предыдущее меню >> ')
+                user_authorization = user_for_edit
+                user_password = check_password(user_authorization)
 
-                if new_user == 'break' or new_user == 'Break':
-                    help_info()
-                    break
+                if user_password == 'NONE':
+                    check_password_text_2()
+                    while True:
+                        new_user = input('Введите новое имя пользователя\n'
+                                         'Или break для выхода в предыдущее меню >> ')
+
+                        if new_user == 'break' or new_user == 'Break':
+                            help_info()
+                            return False
+
+                        else:
+                            if new_user == '':
+                                user_edit_text_3()
+                                continue
+
+                            if os.path.isdir(path_user + '\\' + new_user):
+                                user_edit_text_4()
+                                continue
+
+                            if new_user == 'DELETED':
+                                user_edit_text_3()
+                                continue
+
+                            if len(new_user) <= 12:
+                                shutil.copytree(path_user + '\\' + user_for_edit, path_user + '\\' + new_user)
+                                shutil.rmtree(path_user + '\\' + user_for_edit)
+                                with open(path + '\\users.txt', 'r', encoding='utf-8') as file:
+                                    users = file.read()
+                                    new_status = users.replace(user_for_edit, new_user)
+                                with open(path + '\\users.txt', 'w', encoding='utf-8') as file:
+                                    file.write(new_status)
+                                    print('\nПользователь успешно изменен\n')
+                                    help_info()
+                                    break
+
+                            else:
+                                error_input_2()
+                                return False
 
                 else:
-                    if new_user == '':
-                        user_edit_text_3()
-                        continue
+                    input_password = input('\nВведите пароль для продолжения\n'
+                                           'Или введите break для выхода в предыдущее меню >> ')
 
-                    if os.path.isdir(path_user + '\\' + new_user):
-                        user_edit_text_4()
-                        continue
+                    if input_password == 'break' or input_password == 'Break':
+                        help_info()
+                        return False
 
-                    if new_user == 'DELETED':
-                        user_edit_text_3()
-                        continue
+                    if input_password == user_password:
+                        check_password_text_2()
+                        while True:
+                            new_user = input('Введите новое имя пользователя\n'
+                                             'Или break для выхода в предыдущее меню >> ')
 
-                    if len(new_user) <= 12:
-                        shutil.copytree(path_user + '\\' + user_for_edit, path_user + '\\' + new_user)
-                        shutil.rmtree(path_user + '\\' + user_for_edit)
-                        with open(path + '\\users.txt', 'r', encoding='utf-8') as file:
-                            users = file.read()
-                            new_status = users.replace(user_for_edit, new_user)
-                        with open(path + '\\users.txt', 'w', encoding='utf-8') as file:
-                            file.write(new_status)
-                            print('\nПользователь успешно изменен\n')
-                            help_info()
-                            break
+                            if new_user == 'break' or new_user == 'Break':
+                                help_info()
+                                break
 
-                    else:
-                        error_input_2()
+                            else:
+                                if new_user == '':
+                                    user_edit_text_3()
+                                    continue
+
+                                if os.path.isdir(path_user + '\\' + new_user):
+                                    user_edit_text_4()
+                                    continue
+
+                                if new_user == 'DELETED':
+                                    user_edit_text_3()
+                                    continue
+
+                                if len(new_user) <= 12:
+                                    shutil.copytree(path_user + '\\' + user_for_edit, path_user + '\\' + new_user)
+                                    shutil.rmtree(path_user + '\\' + user_for_edit)
+                                    with open(path + '\\users.txt', 'r', encoding='utf-8') as file:
+                                        users = file.read()
+                                        new_status = users.replace(user_for_edit, new_user)
+                                    with open(path + '\\users.txt', 'w', encoding='utf-8') as file:
+                                        file.write(new_status)
+                                        print('\nПользователь успешно изменен\n')
+                                        help_info()
+                                        break
+
+                                else:
+                                    error_input_2()
+
+                    if input_password != user_password:
+                        check_password_text_1()
+                        help_info()
+                        return False
 
 
-'''
-Функция вывода информация для последующего выбора команды пользователем
-'''
 
 def user_select_info():
+    """
+    Информативная функция для вывода списка команд по пользователям.
+    :return: None
+    """
     user_select_info_text()
 
 
-'''
-Функция вызова информации для помощи пользователю
-'''
 
 def help_info():
+    """
+    Информативная функция для вывода текстовой информации по команде help.
+    :return: None
+    """
     help_info_text()
 
 
-'''
-Блок по заметкам
-'''
-
-def main_note(action, user):
+def note_main(action, user):
+    """
+    Функция по обработке команд по интерфейсу заметок, принимает параметр action (команда пользователя) и user(авторизованного пользователя).
+    :param action: str
+    :param user: str
+    :return: None
+    """
 
     if action == 'exit':
         return False
 
     elif action == 'create':
-        add_note(user)
+        note_add(user)
 
     elif action == 'list':
-        list_note(user)
-        # if not os.path.isfile(path_user + '\\' + user + '\\note_' + user + '.txt'):
-        #     note_list_text()
-        # else:
-        #     notes = os.listdir(path_user + '\\' + user)
-        #     print(notes)
-        #     for file in os.listdir(path_user + '\\' + user):
-        #         print(file)
-        #         if file.endswith('.txt'):
-        #             print(file)
-        #             with open(file, 'r', encoding='utf-8') as f:
-        #                 line = f.readline()
-        #                 print(line)
+        note_list(user)
 
     elif action == 'del':
         del_note(user)
 
     elif action == 'help':
-        add_note_menu()
+        note_menu()
 
     elif action == 'find':
         find_note(user)
@@ -347,7 +537,12 @@ def main_note(action, user):
     elif action == 'edit':
         edit_note(user)
 
-def add_note(user):
+def note_add(user):
+    """
+    Функция по созданию заметки пользователя. Заметка содержит название, содержание и важность, принимает параметр user(авторизованного пользователя).
+    :param user: str
+    :return: None
+    """
     count_max = 1
     if not os.path.isfile(path_user + '\\' + user + '\\' + 'note_count.txt'):
         file = open(path_user + '\\' + user + '\\note_count.txt', 'w', encoding='utf-8')
@@ -389,7 +584,12 @@ def add_note(user):
 
 
 
-def list_note(user):
+def note_list(user):
+    """
+    Функция по выводу списка заметок пользователя, принимает параметр user(авторизованного пользователя).
+    :param user:str
+    :return: None
+    """
     with open(path_user + '\\' + user + '\\' + 'note_' + user + '.txt', 'r', encoding='utf-8') as file:
         notes = file.read()
         notes = notes.replace('間', ';\n').replace('終', '')
@@ -397,6 +597,14 @@ def list_note(user):
 
 
 def del_note(user):
+    """
+    Функция по удалению заметки пользователя, принимает параметр user(авторизованного пользователя).
+    Выполняются следующие проверки:
+    1) Наличие заметок у пользователя;
+    2) Наличие конкретной заметки у пользователя.
+    :param user: str
+    :return: None.
+    """
     while True:
         if not os.path.isfile(path_user + '\\' + user + '\\' + 'note_' + user + '.txt'):
             del_note_text_1()
@@ -457,6 +665,14 @@ def del_note(user):
 
 
 def find_note(user):
+    """
+    Функция по поиску заметки пользователя, принимает параметр user(авторизованного пользователя).
+    Выполняются следующие проверки:
+    1) Наличие заметок у пользователя;
+    2) Наличие конкретной заметки у пользователя.
+    :param user: str
+    :return: None.
+    """
     while True:
         if not os.path.isfile(path_user + '\\' + user + '\\' + 'note_' + user + '.txt'):
             find_note_text_1()
@@ -508,6 +724,14 @@ def find_note(user):
 
 
 def edit_note(user):
+    """
+    Функция по редактированию заметки (наименования, содержания и важности) пользователя, принимает параметр user(авторизованного пользователя).
+    Выполняются следующие проверки:
+    1) Наличие заметок у пользователя;
+    2) Наличие конкретной заметки у пользователя.
+    :param user: str
+    :return: None.
+    """
     while True:
         if not os.path.isfile(path_user + '\\' + user + '\\' + 'note_' + user + '.txt'):
             edit_note_text_1()
@@ -578,9 +802,30 @@ def edit_note(user):
             return False
 
 
-'''
-Основные функции
-'''
+def check_password(user_authorization):
+    """
+    Функция вывода пароля конкретного пользователя, принимает параметр user_authorization(авторизованного пользователя).
+    :param user_authorization: str
+    :return: str
+    """
+    with open(path + '\\users.txt', 'r', encoding='utf-8') as file:
+        with open(path + '\\$$users.txt', 'w', encoding='utf-8') as buff_file:
+            for line in file:
+                if user_authorization in line.strip('\n'):
+                    buff_file.write(line)
+    with open(path + '\\$$users.txt', 'r', encoding='utf-8') as read_file:
+        check_user = read_file.read()
+        check_user = check_user.split('間')
+        user_password = check_user[1]
+        user_password = user_password.replace('user_password:', '')
+        return user_password
+
+
+
 def main():
+    """
+    Основные функции по запуску приложения.
+    :return: None.
+    """
     enter_point()
     user_select()

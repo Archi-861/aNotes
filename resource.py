@@ -2,7 +2,7 @@ import  os
 from support import *
 import shutil
 from datetime import datetime
-
+import csv
 
 user_name = os.environ.get("USERNAME")   #Информация для приветственного сообщения пользователю с обращением к имени пользователя операционной системы
 path = 'C:\\Users\\' + user_name + '\\Documents\\aNotes'   #путь для создания директории приложения
@@ -537,6 +537,9 @@ def note_main(action, user):
     elif action == 'edit':
         edit_note(user)
 
+    elif action == 'import':
+        import_note(user)
+
 def note_add(user):
     """
     Функция по созданию заметки пользователя. Заметка содержит название, содержание и важность, принимает параметр user(авторизованного пользователя).
@@ -590,10 +593,22 @@ def note_list(user):
     :param user:str
     :return: None
     """
-    with open(path_user + '\\' + user + '\\' + 'note_' + user + '.txt', 'r', encoding='utf-8') as file:
-        notes = file.read()
-        notes = notes.replace('間', ';\n').replace('終', '')
-        print(notes)
+    try:
+        with open(path_user + '\\' + user + '\\' + 'note_' + user + '.txt', 'r', encoding='utf-8') as file:
+            notes = file.read()
+            notes = notes.replace('間', ';\n').replace('終', '')
+            print(notes)
+    except FileNotFoundError:
+        note_list_text()
+
+    if os.path.isfile(path_user + '\\' + user + '\\' + 'note_' + user + '.txt'):
+        search_file = open(path_user + '\\' + user + '\\' + 'note_' + user + '.txt', 'r', encoding='utf-8')
+        search_point = '終'
+        search_text = search_file.read()
+        search_file.close()
+        if search_point not in search_text:
+            note_list_text()
+
 
 
 def del_note(user):
@@ -819,6 +834,39 @@ def check_password(user_authorization):
         user_password = check_user[1]
         user_password = user_password.replace('user_password:', '')
         return user_password
+
+
+
+def import_note(user, quoting=None):
+    try:
+        with open(path_user + '\\' + user + '\\' + 'note_' + user + '.txt', 'r', encoding='utf-8') as file_txt:
+            content = file_txt.read()
+            content = content.replace('Заметка № ', '').replace('Наименование = ', '').replace('Содержание = ', '').replace('Создана = ', '').replace('Важность = ', '')
+            content = content.replace('終', '').replace('\n', '')
+            print(content)
+            content = content.split('間')
+            #content_1 = []
+            #[content_1.extend(idx.split('終\n')) for idx in content]
+            print(content)
+            #print(content_1)
+            #with open(path_user + '\\' + user + '\\' + 'note_' + user + '.csv', newline='', encoding='utf-8') as csv_file:
+                #col = ['Номер заметки', 'Наименование', 'Содержание', 'Важность']
+                #writer = csv.DictWriter(csv_file, fieldnames=col)
+                #writer.writeheader()
+                #writer.writerow(content)
+
+
+
+    except FileNotFoundError:
+        note_list_text()
+
+    if os.path.isfile(path_user + '\\' + user + '\\' + 'note_' + user + '.txt'):
+        search_file = open(path_user + '\\' + user + '\\' + 'note_' + user + '.txt', 'r', encoding='utf-8')
+        search_point = '終'
+        search_text = search_file.read()
+        search_file.close()
+        if search_point not in search_text:
+            note_list_text()
 
 
 
